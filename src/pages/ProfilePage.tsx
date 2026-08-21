@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import toast from 'react-hot-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
+import { BackButton } from '@/components/common/BackButton'
 
 export default function ProfilePage() {
   const { user, profile, refreshProfile } = useAuth()
@@ -26,6 +27,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
+      <BackButton to="/dashboard" label="العودة إلى لوحة التحكم" />
       <h1 className="text-2xl font-extrabold">حسابي</h1>
 
       <div className="card flex items-center gap-4 p-5">

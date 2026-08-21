@@ -7,6 +7,7 @@ import clsx from 'clsx'
 const links = [
   { to: '/dashboard', label: 'الرئيسية', icon: Home },
   { to: '/roadmap', label: 'التعلم', icon: BookOpen },
+  { to: '/ai-assistant', label: 'مساعد Eleven AI', icon: Terminal },
   { to: '/problems', label: 'المسائل', icon: Code2 },
   { to: '/playground', label: 'Playground', icon: Terminal },
   { to: '/achievements', label: 'الإنجازات', icon: Trophy },

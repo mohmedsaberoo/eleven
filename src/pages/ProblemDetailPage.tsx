@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase'
 import { usePyodide } from '@/hooks/usePyodide'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { BackButton } from '@/components/common/BackButton'
 import type { Problem } from '@/types/database.types'
 
 interface TestCase {
@@ -75,22 +76,24 @@ export default function ProblemDetailPage() {
   if (!problem) return <div className="h-96 animate-pulse rounded-2xl bg-black/5 dark:bg-white/5" />
 
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-      <div className="space-y-4">
-        <div className="card p-5">
-          <div className="mb-2 flex items-center gap-2">
-            <h1 className="text-xl font-extrabold">
-              #{problem.problem_number} {problem.title}
-            </h1>
-            <span
-              className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                problem.difficulty === 'easy' ? 'bg-eleven-500/10 text-eleven-600' : 'bg-red-500/10 text-red-500'
-              }`}
-            >
-              {problem.difficulty === 'easy' ? 'Easy' : 'Hard'}
-            </span>
-          </div>
-          <p className="leading-7 text-gray-700 dark:text-gray-300">{problem.description}</p>
+    <div className="space-y-5">
+      <BackButton to="/problems" label="العودة إلى التحديات" />
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="space-y-4">
+          <div className="card p-5">
+            <div className="mb-2 flex items-center gap-2">
+              <h1 className="text-xl font-extrabold">
+                #{problem.problem_number} {problem.title}
+              </h1>
+              <span
+                className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                  problem.difficulty === 'easy' ? 'bg-eleven-500/10 text-eleven-600' : 'bg-red-500/10 text-red-500'
+                }`}
+              >
+                {problem.difficulty === 'easy' ? 'Easy' : 'Hard'}
+              </span>
+            </div>
+            <p className="leading-7 text-gray-700 dark:text-gray-300">{problem.description}</p>
 
           <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
             <div>
@@ -116,37 +119,53 @@ export default function ProblemDetailPage() {
           {showHint && <p className="mt-2 rounded-lg bg-eleven-500/10 p-3 text-sm text-gray-700 dark:text-gray-300">{problem.hint}</p>}
         </div>
 
-        {results && (
-          <div className="card space-y-2 p-5">
-            <h3 className="font-bold">نتائج الاختبار</h3>
-            {results.map((r, i) => (
-              <div key={i} className={`flex items-start gap-2 rounded-lg p-2 text-xs ${r.pass ? 'bg-eleven-500/10' : 'bg-red-500/10'}`}>
-                {r.pass ? <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-eleven-500" /> : <XCircle size={15} className="mt-0.5 shrink-0 text-red-500" />}
-                <div className="font-mono">
-                  <p>Expected: {r.expected}</p>
-                  {!r.pass && <p>Got: {r.got}</p>}
+          {results && (
+            <div className="card space-y-2 p-5">
+              <h3 className="font-bold">نتائج الاختبار</h3>
+              {results.map((r, i) => (
+                <div key={i} className={`flex items-start gap-2 rounded-lg p-2 text-xs ${r.pass ? 'bg-eleven-500/10' : 'bg-red-500/10'}`}>
+                  {r.pass ? <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-eleven-500" /> : <XCircle size={15} className="mt-0.5 shrink-0 text-red-500" />}
+                  <div className="font-mono">
+                    <p>Expected: {r.expected}</p>
+                    {!r.pass && <p>Got: {r.got}</p>}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="space-y-3">
-        <div className="overflow-hidden rounded-xl border border-black/10 dark:border-white/10">
-          <Editor
-            height="360px"
-            defaultLanguage="python"
-            value={code}
-            onChange={(v) => setCode(v ?? '')}
-            theme={theme === 'dark' ? 'vs-dark' : 'light'}
-            options={{ fontSize: 14, minimap: { enabled: false }, padding: { top: 12 } }}
-          />
+              ))}
+            </div>
+          )}
         </div>
-        <button onClick={handleRunTests} disabled={!ready || running || solved} className="btn-primary flex w-full items-center justify-center gap-2">
-          {running || initializing ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} />}
-          {solved ? 'تم الحل بنجاح ✅' : initializing ? 'تجهيز المحرك...' : running ? 'جارٍ التشغيل...' : 'Run & Submit'}
-        </button>
+
+        <div className="space-y-3">
+          <div className="overflow-hidden rounded-xl border border-black/10 dark:border-white/10">
+            <Editor
+              height="420px"
+              defaultLanguage="python"
+              language="python"
+              value={code}
+              onChange={(v) => setCode(v ?? '')}
+              theme={theme === 'dark' ? 'vs-dark' : 'vs'}
+              options={{
+                automaticLayout: true,
+                fontSize: 14,
+                minimap: { enabled: true },
+                lineNumbers: 'on',
+                scrollBeyondLastLine: false,
+                padding: { top: 12, bottom: 12 },
+                tabSize: 4,
+                insertSpaces: true,
+                wordWrap: 'off',
+                readOnly: false,
+                domReadOnly: false,
+                contextmenu: true,
+                cursorStyle: 'line',
+              }}
+            />
+          </div>
+          <button onClick={handleRunTests} disabled={!ready || running || solved} className="btn-primary flex w-full items-center justify-center gap-2">
+            {running || initializing ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} />}
+            {solved ? 'تم الحل بنجاح ✅' : initializing ? 'تجهيز المحرك...' : running ? 'جارٍ التشغيل...' : 'Run & Submit'}
+          </button>
+        </div>
       </div>
     </div>
   )

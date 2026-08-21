@@ -1,6 +1,58 @@
 import { supabase } from '@/lib/supabase'
 import type { Chapter, Lesson, LessonProgress, Problem, Quiz, Achievement, UserAchievement } from '@/types/database.types'
 
+function normalizeBeginnerLesson(lesson: Lesson): Lesson {
+  const title = lesson.title || 'درس جديد'
+  const upgradedSummary = lesson.summary || `هذا درس عن ${title} بطريقة بسيطة جدًا للمبتدئين.`
+  const goals = lesson.objectives?.length ? lesson.objectives : [
+    `فهْم فكرة ${title} من الصفر`,
+    'تطبيق الفكرة في كود Python بسيط',
+    'استخدام المثال داخل الـ IDE بنفسك',
+  ]
+
+  const conceptText = `بص 👀\n\nفي هذا الدرس هنتعلّم ${title} بطريقة سهلة جدًا، من الصفر.\n\nالفكرة ببساطة: ${upgradedSummary}.\n\nبنستخدم مثال عملي، وبعدها هتجرب الكود بنفسك داخل الـ IDE. فكر في كل سطر كوصف لما يحدث، وليس مجرد كلمات محفوظة.`
+
+  const explanation = [
+    conceptText,
+    'الهدف مش إنك تحفظ الكود، الهدف إنك تفهم ليه مكتوب كده، وإيه اللي بيحدث في كل خط.',
+    'لو واجهتك فكرة جديدة، خليك هادئ وامشِ في المثال خطوة بخطوة. كل مبرمج يبدأ من الصفر، وكل Error أو خطأ يعتبر جزء من التعلم.',
+  ].join('\n\n')
+
+  const codeExamples = Array.isArray(lesson.content?.code_examples) && lesson.content.code_examples.length > 0
+    ? lesson.content.code_examples
+    : [
+        {
+          code: 'print("Hello, Eleven!")',
+          explanation: 'هذا المثال يوضح فكرة ${title} بشكل بسيط جدًا. اقرأ كل كلمة، ثم جرّبها بنفسك في المحرر.',
+        },
+      ]
+
+  const challenge = lesson.content?.challenge || {
+    prompt: `اكتب كودًا صغيرًا يوضح فكرة ${title}، ثم شغّله داخل IDE وراقب النتيجة.`,
+    starter_code: 'print("اكتب كودك هنا")',
+  }
+
+  return {
+    ...lesson,
+    summary: upgradedSummary,
+    objectives: goals,
+    content: {
+      ...lesson.content,
+      explanation,
+      code_examples: codeExamples,
+      challenge,
+      common_mistakes: lesson.content?.common_mistakes?.length ? lesson.content.common_mistakes : [
+        'عدم فهم الفكرة الأساسية قبل كتابة الكود.',
+        'محاولة حفظ الكود من غير فهم.',
+      ],
+      tips: lesson.content?.tips?.length ? lesson.content.tips : [
+        'اقرأ المثال ببطء، ثم جرّبه بنفسك في الـ IDE.',
+        'لا تخف من الأخطاء، كل خطأ يساعدك تتعلّم.',
+      ],
+    },
+  }
+}
+
 export async function getChapters(): Promise<Chapter[]> {
   const { data, error } = await supabase.from('chapters').select('*').order('chapter_number')
   if (error) throw error
@@ -28,7 +80,7 @@ export async function getChapterWithLessons(chapterNumber: number) {
 export async function getLesson(lessonId: string): Promise<Lesson> {
   const { data, error } = await supabase.from('lessons').select('*').eq('id', lessonId).single()
   if (error) throw error
-  return data as Lesson
+  return normalizeBeginnerLesson(data as Lesson)
 }
 
 export async function getLessonQuizzes(lessonId: string): Promise<Quiz[]> {

@@ -12,6 +12,7 @@ import RoadmapPage from '@/pages/RoadmapPage'
 import ChapterPage from '@/pages/ChapterPage'
 import LessonPage from '@/pages/LessonPage'
 import PlaygroundPage from '@/pages/PlaygroundPage'
+import AIAssistantPage from '@/pages/AIAssistantPage'
 import ProblemsPage from '@/pages/ProblemsPage'
 import ProblemDetailPage from '@/pages/ProblemDetailPage'
 import AchievementsPage from '@/pages/AchievementsPage'
@@ -36,6 +37,7 @@ export default function App() {
             <Route path="/chapter/:chapterNumber" element={<ChapterPage />} />
             <Route path="/lesson/:lessonId" element={<LessonPage />} />
             <Route path="/playground" element={<PlaygroundPage />} />
+            <Route path="/ai-assistant" element={<AIAssistantPage />} />
             <Route path="/problems" element={<ProblemsPage />} />
             <Route path="/problems/:problemId" element={<ProblemDetailPage />} />
             <Route path="/achievements" element={<AchievementsPage />} />

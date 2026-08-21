@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { CheckCircle2, Circle, Clock } from 'lucide-react'
+import { CheckCircle2, Circle, Clock, ArrowLeft } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { getChapterWithLessons, getUserProgress } from '@/services/content'
 import type { Chapter, Lesson, LessonProgress } from '@/types/database.types'
+import { BackButton } from '@/components/common/BackButton'
 
 export default function ChapterPage() {
   const { chapterNumber } = useParams()
@@ -30,22 +31,33 @@ export default function ChapterPage() {
 
   if (lessons.length === 0) {
     return (
-      <div className="card p-8 text-center">
-        <p className="text-3xl">{chapter.icon}</p>
-        <h1 className="mt-2 text-xl font-bold">{chapter.title}</h1>
-        <p className="mt-2 text-gray-500 dark:text-gray-400">
-          دروس هذا الفصل قيد الإضافة حاليًا من فريق Eleven — تابعنا قريبًا.
-        </p>
+      <div className="space-y-4">
+        <BackButton to="/roadmap" label="العودة إلى الخريطة" />
+        <div className="card p-8 text-center">
+          <p className="text-3xl">{chapter.icon}</p>
+          <h1 className="mt-2 text-xl font-bold">{chapter.title}</h1>
+          <p className="mt-2 text-gray-500 dark:text-gray-400">
+            دروس هذا الفصل قيد الإضافة حاليًا من فريق Eleven — تابعنا قريبًا.
+          </p>
+        </div>
       </div>
     )
   }
 
   const isCompleted = (lessonId: string) => progress.some((p) => p.lesson_id === lessonId && p.completed)
+  const completedCount = lessons.filter((lesson) => isCompleted(lesson.id)).length
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between gap-3">
+        <BackButton to="/roadmap" label="العودة إلى الخريطة" />
+        <div className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 dark:border-white/10 dark:bg-slate-900 dark:text-gray-300">
+          {completedCount}/{lessons.length} مكتمل
+        </div>
+      </div>
+
       <div className="card p-6">
-        <p className="text-sm text-gray-500">فصل {chapter.chapter_number} • {chapter.stage}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">فصل {chapter.chapter_number} • {chapter.stage}</p>
         <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold">
           <span>{chapter.icon}</span> {chapter.title}
         </h1>
@@ -64,11 +76,11 @@ export default function ChapterPage() {
             >
               {done ? <CheckCircle2 className="text-eleven-500" size={22} /> : <Circle className="text-gray-400" size={22} />}
               <div className="min-w-0 flex-1">
-                <p className="text-xs text-gray-500">درس {l.lesson_number}</p>
-                <p className="font-semibold">{l.title}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">درس {l.lesson_number}</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{l.title}</p>
                 <p className="truncate text-xs text-gray-500 dark:text-gray-400">{l.summary}</p>
               </div>
-              <div className="flex items-center gap-1 text-xs text-gray-500">
+              <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
                 <Clock size={13} /> {l.duration_minutes} د
               </div>
             </Link>

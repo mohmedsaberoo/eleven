@@ -30,24 +30,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-      setUser(data.session?.user ?? null)
-      if (data.session?.user) loadProfile(data.session.user.id)
-      setLoading(false)
-    })
+    let mounted = true
+    let handled = false
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession)
-      setUser(newSession?.user ?? null)
-      if (newSession?.user) {
-        loadProfile(newSession.user.id)
+    const setFromSessionData = (sessionData: Session | null) => {
+      if (!mounted) return
+      setSession(sessionData)
+      setUser(sessionData?.user ?? null)
+      if (sessionData?.user) {
+        loadProfile(sessionData.user.id)
       } else {
         setProfile(null)
       }
+    }
+
+    // Listen for auth state changes first to ensure we capture any events
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      handled = true
+      setFromSessionData(newSession)
+      setLoading(false)
     })
 
-    return () => sub.subscription.unsubscribe()
+    // Then query the current session. If onAuthStateChange already handled
+    // the initial state, we'll avoid overwriting loading state prematurely.
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return
+      if (!handled) {
+        setFromSessionData(data.session ?? null)
+        setLoading(false)
+        handled = true
+      }
+    }).catch(() => {
+      if (mounted && !handled) setLoading(false)
+    })
+
+    return () => {
+      mounted = false
+      try {
+        sub?.subscription?.unsubscribe?.()
+      } catch (_) {
+        // ignore
+      }
+    }
   }, [])
 
   const signUp: AuthContextValue['signUp'] = async (email, password, fullName) => {

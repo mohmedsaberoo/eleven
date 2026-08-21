@@ -52,6 +52,60 @@ body {
   }
 }
 
+.inline-code {
+  display: inline-block;
+  padding: 0.08rem 0.42rem;
+  border-radius: 0.45rem;
+  background: rgba(67, 203, 124, 0.12);
+  border: 1px solid rgba(67, 203, 124, 0.2);
+  color: #0f172a;
+  font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+  font-size: 0.9em;
+  font-weight: 700;
+}
+
+.dark .inline-code {
+  background: rgba(121, 224, 161, 0.12);
+  border-color: rgba(121, 224, 161, 0.28);
+  color: #e2e8f0;
+}
+
+.eleven-ide {
+  position: relative;
+  isolation: isolate;
+}
+
+.eleven-ide .monaco-editor {
+  min-height: 100%;
+  border-radius: 0.75rem;
+  pointer-events: auto;
+}
+
+.eleven-ide .monaco-editor .margin {
+  border-right: 1px solid rgba(148, 163, 184, 0.24);
+  pointer-events: auto;
+}
+
+.eleven-ide .monaco-editor .scrollbar {
+  background: transparent;
+  pointer-events: auto;
+}
+
+.eleven-ide .monaco-editor .overflow-guard {
+  border-radius: 0.75rem;
+  pointer-events: auto;
+}
+
+.eleven-ide .monaco-editor .monaco-scrollable-element,
+.eleven-ide .monaco-editor .view-lines,
+.eleven-ide .monaco-editor .inputarea,
+.eleven-ide .monaco-editor .view-line,
+.eleven-ide .monaco-editor .contentWidgets,
+.eleven-ide .monaco-editor .context-view,
+.eleven-ide .monaco-editor .monaco-editor-background {
+  pointer-events: auto !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
