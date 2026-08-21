@@ -38,19 +38,9 @@ export default function SignupPage() {
     const { error } = await signUp(form.email, form.password, form.fullName)
     setLoading(false)
     if (error) {
-      const e = error.toLowerCase()
-      if (e.includes('already') || e.includes('duplicate') || e.includes('unique')) {
-        toast.error('هذا البريد مستخدم بالفعل')
-      } else if (e.includes('password') || e.includes('weak') || e.includes('length')) {
-        toast.error('كلمة المرور ضعيفة أو لا تفي بالمتطلبات')
-      } else if (e.includes('email') || e.includes('invalid')) {
-        toast.error('البريد الإلكتروني غير صالح')
-      } else if (e.includes('network') || e.includes('fetch') || e.includes('failed to fetch')) {
-        toast.error('خطأ في الاتصال بـ Supabase')
-      } else {
-        // Generic but include server message for debugging clarity
-        toast.error(error)
-      }
+      // Surface the original error for debugging and clarity.
+      console.error('SIGNUP ERROR:', error)
+      toast.error(String(error))
       return
     }
     toast.success('تم إنشاء الحساب! تحقق من بريدك للتأكيد إن لزم.')
