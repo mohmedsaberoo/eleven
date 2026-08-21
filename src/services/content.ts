@@ -7,10 +7,10 @@ function normalizeBeginnerLesson(lesson: Lesson): Lesson {
   const goals = lesson.objectives?.length ? lesson.objectives : [
     `فهْم فكرة ${title} من الصفر`,
     'تطبيق الفكرة في كود Python بسيط',
-    'استخدام المثال داخل الـ IDE بنفسك',
+    'تجربة المثال خارج المنصة على جهازك',
   ]
 
-  const conceptText = `بص 👀\n\nفي هذا الدرس هنتعلّم ${title} بطريقة سهلة جدًا، من الصفر.\n\nالفكرة ببساطة: ${upgradedSummary}.\n\nبنستخدم مثال عملي، وبعدها هتجرب الكود بنفسك داخل الـ IDE. فكر في كل سطر كوصف لما يحدث، وليس مجرد كلمات محفوظة.`
+  const conceptText = `بص 👀\n\nفي هذا الدرس هنتعلّم ${title} بطريقة سهلة جدًا، من الصفر.\n\nالفكرة ببساطة: ${upgradedSummary}.\n\nبنستخدم مثال عملي للقراءة والشرح. اقرأ كل سطر ببطء وفهم المقصود.`
 
   const explanation = [
     conceptText,
@@ -18,17 +18,17 @@ function normalizeBeginnerLesson(lesson: Lesson): Lesson {
     'لو واجهتك فكرة جديدة، خليك هادئ وامشِ في المثال خطوة بخطوة. كل مبرمج يبدأ من الصفر، وكل Error أو خطأ يعتبر جزء من التعلم.',
   ].join('\n\n')
 
-  const codeExamples = Array.isArray(lesson.content?.code_examples) && lesson.content.code_examples.length > 0
+    const codeExamples = Array.isArray(lesson.content?.code_examples) && lesson.content.code_examples.length > 0
     ? lesson.content.code_examples
     : [
         {
           code: 'print("Hello, Eleven!")',
-          explanation: 'هذا المثال يوضح فكرة ${title} بشكل بسيط جدًا. اقرأ كل كلمة، ثم جرّبها بنفسك في المحرر.',
+          explanation: 'هذا المثال يوضح الفكرة بشكل بسيط جدًا. اقرأ الكود خطوة بخطوة.',
         },
       ]
 
   const challenge = lesson.content?.challenge || {
-    prompt: `اكتب كودًا صغيرًا يوضح فكرة ${title}، ثم شغّله داخل IDE وراقب النتيجة.`,
+    prompt: `اقرأ المطلوب التالي وقرّر أي سطر سيعطي الناتج المطلوب. لا تحتاج لكتابة كود.`,
     starter_code: 'print("اكتب كودك هنا")',
   }
 
@@ -46,7 +46,7 @@ function normalizeBeginnerLesson(lesson: Lesson): Lesson {
         'محاولة حفظ الكود من غير فهم.',
       ],
       tips: lesson.content?.tips?.length ? lesson.content.tips : [
-        'اقرأ المثال ببطء، ثم جرّبه بنفسك في الـ IDE.',
+        'اقرأ المثال ببطء، ثم انسخه وجربه خارج المنصة على جهازك.',
         'لا تخف من الأخطاء، كل خطأ يساعدك تتعلّم.',
       ],
     },

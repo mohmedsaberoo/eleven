@@ -47,11 +47,12 @@ export function CodeBlock({ code, title = 'Python' }: CodeBlockProps) {
           aria-label="Copy code"
         >
           {copied ? <Check size={11} /> : <Copy size={11} />}
-          {copied ? 'Copied' : 'Copy'}
+          {copied ? 'تم النسخ' : 'نسخ'}
         </button>
       </div>
       <pre
-        className="overflow-x-auto p-4 font-mono text-sm leading-7 text-slate-100"
+        dir="ltr"
+        className="overflow-x-auto p-8 font-mono text-lg leading-8 text-slate-100"
         dangerouslySetInnerHTML={{ __html: highlightCode(code) }}
       />
     </div>

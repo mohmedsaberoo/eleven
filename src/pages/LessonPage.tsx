@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2, Lightbulb, Target, TriangleAlert, 
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { getLesson, getLessonQuizzes, completeLesson, getUserProgress } from '@/services/content'
-import { CodeRunner } from '@/components/lesson/CodeRunner'
+// Note: interactive CodeRunner/IDE intentionally removed from lesson flow.
 import { QuizWidget } from '@/components/lesson/QuizWidget'
 import { CodeBlock } from '@/components/lesson/CodeBlock'
 import { CodeExplanation } from '@/components/lesson/CodeExplanation'
@@ -34,7 +34,7 @@ function buildPedagogicLesson(lesson: Lesson) {
   const breakdown = [
     { label: 'الخطوة 1', text: 'نقرأ الكود ببطء، وليس كأنه جملة معقدة.' },
     { label: 'الخطوة 2', text: 'نلاحظ كل جزء من الكود: الكلمات، القوسين، القيم، والأوامر.' },
-    { label: 'الخطوة 3', text: 'نجرّب المثال بنفسنا في الـ IDE ونشوف النتيجة الحقيقية.' },
+    { label: 'الخطوة 3', text: 'افهم الناتج المتوقّع من كل سطر؛ لا تحتاج للكتابة داخل المنصة.' },
   ]
 
   const exampleText = `مثال بسيط جدًا:\nلو عايز ${lessonNameLower.includes('print') ? 'تخلي الكمبيوتر يكتب كلمة على الشاشة' : lessonNameLower.includes('variable') ? 'تخزين قيمة في متغير' : lessonNameLower.includes('input') ? 'تخلي المستخدم يدخل قيمة' : lessonNameLower.includes('if') ? 'تحدّد قرار حسب شرط' : lessonNameLower.includes('loop') ? 'تكرار نفس الخطوة أكثر من مرة' : `تطبيق فكرة ${title}`}.`
@@ -230,17 +230,10 @@ export default function LessonPage() {
           )}
 
           <section className="card p-5 md:p-6">
-            <h2 className="mb-4 text-xl font-black text-slate-900 dark:text-white">▶️ جرب بنفسك</h2>
+            <h2 className="mb-4 text-xl font-black text-slate-900 dark:text-white">▶️ مثال للقراءة</h2>
             <p className="mb-3 text-sm leading-7 text-gray-700 dark:text-gray-300">{pedagogicLesson.exampleText}</p>
-            <p className="mb-4 text-sm leading-7 text-gray-700 dark:text-gray-300">اكتب الكود في الـ IDE، ثم شغّله وراقب النتيجة. احرص على فهم كل سطر قبل أن تنقل إلى التالي.</p>
-            <CodeBlock code={pedagogicLesson.starterCode} title="Try It" />
-          </section>
-
-          <section className="card border-dashed border-eleven-500/30 bg-eleven-500/[0.04] p-5 md:p-6">
-            <h2 className="mb-3 text-xl font-black text-slate-900 dark:text-white">✏️ عدّل الكود</h2>
-            <p className="text-sm leading-7 text-gray-700 dark:text-gray-300">
-              جرّب تغيّر شيء بسيط الآن. مثلاً: بدل النص، أو عدد، أو قيمة المتغير، ثم شغّل الكود مرة ثانية. هذا هو أفضل طريق لفهم الفكرة.
-            </p>
+            <p className="mb-4 text-sm leading-7 text-gray-700 dark:text-gray-300">اقرأ المثال ببطء. الكود هنا للقراءة فقط — تقدر تنسخه بجانبك لو حبيت تجرب خارجيًا.</p>
+            <CodeBlock code={pedagogicLesson.starterCode} title="مثال" />
           </section>
 
           {lesson.content.common_mistakes?.length > 0 && (
@@ -281,7 +274,7 @@ export default function LessonPage() {
               <p className="mb-4 text-sm leading-7 text-gray-600 dark:text-gray-300">{pedagogicLesson.challengeText}</p>
               <CodeBlock code={pedagogicLesson.starterCode} title="Starter Code" />
               <div className="mt-5 rounded-2xl border border-dashed border-eleven-500/30 bg-eleven-500/5 p-4 text-sm text-gray-700 dark:text-gray-200">
-                اكتب الكود في المحرر التالي، عدّل القيم إن أردت، ثم شغّله باستخدام الزر Run. لا تقلق إذا كانت النتيجة أول مرة مختلفة؛ الهدف هو التجربة والفهم.
+                هذا المثال للقراءة فقط — انسخه وجربه خارج المنصة إذا رغبت. الهدف هنا هو الفهم والملاحظة، لا كتابة الكود داخل الدرس.
               </div>
             </section>
           )}
@@ -300,28 +293,22 @@ export default function LessonPage() {
           {lesson.content.challenge && (
             <section className="card p-5 md:p-6">
               <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-xl font-black text-slate-900 dark:text-white">💻 IDE</h3>
-                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                  Live Python
-                </span>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white">🐍 مثال</h3>
               </div>
-              <CodeRunner
-                initialCode={lesson.content.challenge.starter_code}
-                height="260px"
-                storageKey={`eleven_lesson_${lesson.id}`}
-                lessonName={lesson.title}
-                chapterName={chapterNumber ? `الفصل ${chapterNumber}` : 'الفصل الحالي'}
-                challengePrompt={lesson.content.challenge.prompt}
-              />
+              <CodeBlock code={lesson.content.challenge.starter_code} title="مثال" />
+              <div className="mt-3 text-sm text-gray-700 dark:text-gray-300">
+                <p className="font-semibold">💡 ببساطة:</p>
+                <p>هنا مثال جاهز للقراءة فقط. لا تحتاج لكتابة أو تشغيل أي كود.</p>
+              </div>
             </section>
           )}
 
           <div className="card p-5 md:p-6">
             <CodeExplanation
               steps={[
-                { label: 'الخطوة الأولى', text: 'ابدأ بكتابة الكود في المحرر وتجربة القيم المختلفة.' },
-                { label: 'التجربة', text: 'شغّل الكود وراقب الإخراج داخل Output لتفهم ما يحدث.' },
-                { label: 'التعديل', text: 'غيّر القيم أو البنية لتتأكد أنك فهمت الفكرة وليس مجرد نسخها.' },
+                { label: 'الخطوة الأولى', text: 'اقرأ الكود ببطء وفهم كل سطر.' },
+                { label: 'التجربة', text: 'انسخ المثال إذا حبيت جرّبه خارج المنصة، لاحظ الناتج.' },
+                { label: 'التأكيد', text: 'اسأل نفسك: هل فهمت لماذا هذا السطر موجود؟' },
               ]}
             />
           </div>
